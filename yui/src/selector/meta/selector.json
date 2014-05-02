@@ -1,0 +1,14 @@
+{
+    "moodle-local_bulkmeta-selector": {
+        "requires": [
+            "base",
+            "node",
+            "json-parse",
+            "autocomplete",
+            "autocomplete-filters",
+            "autocomplete-highlighters",
+            "event",
+            "event-key"
+        ]
+    }
+}

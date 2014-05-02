@@ -1,0 +1,10 @@
+{
+    "name": "moodle-local_bulkmeta-selector",
+    "builds": {
+        "moodle-local_bulkmeta-selector": {
+            "jsfiles": [
+                "selector.js"
+            ]
+        }
+    }
+}
