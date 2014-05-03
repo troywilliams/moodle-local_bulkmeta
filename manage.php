@@ -42,6 +42,7 @@ navigation_node::override_active_url(new moodle_url('/enrol/instances.php', arra
 
 require_login($course);
 require_capability('moodle/course:enrolconfig', $context);
+require_capability('enrol/meta:config', $context);
 
 // If not enabled redirect enrolment management page.
 if (!enrol_is_enabled('meta')) {
