@@ -16,6 +16,14 @@
 
 define('AJAX_SCRIPT', true);
 
+/**
+ * AJAX search handler
+ *
+ * @package    local_bulkmeta
+ * @copyright  2014 Troy Williams
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 require_once(dirname(__FILE__) . '/../../config.php');
 require_once($CFG->dirroot . '/enrol/meta/locallib.php');
 require_once($CFG->dirroot . '/local/bulkmeta/locallib.php');
@@ -29,8 +37,8 @@ echo $OUTPUT->header();
 require_login();
 require_sesskey();
 
-$id         = required_param('id', PARAM_INT);// course id
-$searchtext = required_param('searchtext', PARAM_TEXT);// Get the search parameter.
+$id         = required_param('id', PARAM_INT); // Get the course identifier parameter.
+$searchtext = required_param('searchtext', PARAM_TEXT); // Get the search parameter.
 
 $course = $DB->get_record('course', array('id' => $id), '*', MUST_EXIST);
 

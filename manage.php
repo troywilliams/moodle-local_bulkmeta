@@ -14,12 +14,20 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Page to link/unlink multiple courses as meta course enrolments.
+ *
+ * @package    local_bulkmeta
+ * @copyright  2014 Troy Williams
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 require_once("$CFG->dirroot/enrol/meta/locallib.php");
 require_once("$CFG->dirroot/local/bulkmeta/manage_form.php");
 require_once("$CFG->dirroot/local/bulkmeta/locallib.php");
 
-$id = required_param('id', PARAM_INT); // course id
+$id = required_param('id', PARAM_INT); // Get the course identifier parameter.
 
 $course = $DB->get_record('course', array('id' => $id), '*', MUST_EXIST);
 $context = context_course::instance($course->id, MUST_EXIST);
@@ -35,7 +43,7 @@ navigation_node::override_active_url(new moodle_url('/enrol/instances.php', arra
 require_login($course);
 require_capability('moodle/course:enrolconfig', $context);
 
-// If not enabled redirect enrolment management page
+// If not enabled redirect enrolment management page.
 if (!enrol_is_enabled('meta')) {
     notice(get_string('notenabled', 'local_bulkmeta'), new moodle_url('/admin/settings.php?section=manageenrols'));
 }
@@ -44,7 +52,7 @@ if (optional_param('links_clearbutton', 0, PARAM_RAW) && confirm_sesskey()) {
     redirect($pageurl);
 }
 
-// get the course meta link enrolment plugin
+// Get the course meta link enrolment plugin.
 $enrol = enrol_get_plugin('meta');
 
 if (!$enrol->get_newinstance_link($course->id)) {
@@ -52,28 +60,28 @@ if (!$enrol->get_newinstance_link($course->id)) {
 }
 
 $mform = new bulkmeta_manage_form($pageurl->out(false), array('course' => $course));
-// redirect to instance page on cancel
+// Redirect to instance page on cancel.
 if ($mform->is_cancelled()) {
     redirect(new moodle_url('/enrol/instances.php', array('id' => $course->id)));
 }
-// handle add and removes
+// Handle the add and the removes.
 if ($mform->is_submitted()) {
     $data = $mform->get_data();
-    // process courses to be linked
+    // Process courses to be linked.
     if (isset($data->bulkmeta_addbutton) && !empty($data->bulkmeta_link)) {
         foreach ($data->bulkmeta_link as $courseidtolink) {
-            if (!empty($courseidtolink)) { // because of formlib selectgroups
+            if (!empty($courseidtolink)) { // Because of formlib selectgroups.
                 $enrol->add_instance($course, array('customint1' => $courseidtolink));
             }
         }
         enrol_meta_sync($course->id);
         redirect(new moodle_url('/local/bulkmeta/manage.php', array('id' => $course->id)));
     }
-    // process courses to be unlinked
+    // Process courses to be unlinked.
     if (isset($data->bulkmeta_removebutton) && !empty($data->bulkmeta_unlink)) {
         list($insql, $inparams) = $DB->get_in_or_equal($data->bulkmeta_unlink, SQL_PARAMS_NAMED);
         $params = array_merge(array('courseid' => $data->id), $inparams);
-        $instances = $DB->get_records_select('enrol', 
+        $instances = $DB->get_records_select('enrol',
                                              "enrol = 'meta' AND courseid = :courseid AND customint1 ". $insql,
                                              $params);
         foreach ($instances as $instance) {

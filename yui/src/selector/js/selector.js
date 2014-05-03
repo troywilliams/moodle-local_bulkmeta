@@ -13,6 +13,14 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Javascript library
+ *
+ * @package    local_bulkmeta
+ * @copyright  2014 Troy Williams
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 M.local_bulkmeta = M.local_bulkmeta || {};
 M.local_bulkmeta.selector = {
     /**
@@ -51,30 +59,30 @@ M.local_bulkmeta.selector = {
 
         this.courseid = courseid;
         this.name = name;
-        
-        Y.one('#id_'+ name + '_searchbutton').remove();
-        Y.one('#id_'+ name + '_clearbutton').remove();
 
-        this.searchfield = Y.one('#id_'+ name + '_searchtext');
+        Y.one('#id_' + name + '_searchbutton').remove();
+        Y.one('#id_' + name + '_clearbutton').remove();
+
+        this.searchfield = Y.one('#id_' + name + '_searchtext');
         this.searchfield.plug(Y.Plugin.AutoComplete);
         this.searchfield.ac.set('source', this.prepare_url(this.AJAX_SEARCH_URL, courseid));
         this.searchfield.ac.set('resultListLocator', 'results');
         this.searchfield.ac.set('resultTextLocator', 'fullname');
         this.searchfield.ac.on('results', Y.bind(this.fill_listbox, this));
         this.searchfield.on('key', Y.bind(this.backspace, this), 'backspace');
-        
-        this.listbox = Y.one('#id_'+ name + '_link');
+
+        this.listbox = Y.one('#id_' + name + '_link');
 
         for (var i in this.options) {
             var optionname = this.options[i];
-            var optionnode = Y.one('#id_' + name +'_option_' + optionname);
+            var optionnode = Y.one('#id_' + name + '_option_' + optionname);
             if (optionnode) {
                 optionnode.on('click', this.set_user_preference, null, name, optionname);
             }
         }
 
     },
-            
+
     backspace : function() {
         if (this.get_search_text() === '') {
             this.searchfield.ac.sendRequest('');
@@ -118,7 +126,7 @@ M.local_bulkmeta.selector = {
         count = 0;
         for (var id in data.result.results) {
             //console.log(id + ' ' + data.result.results[id]);
-            var option = Y.Node.create('<option value="'+ id +'">'+ data.result.results[id] +'</option>');
+            var option = Y.Node.create('<option value="' + id + '">' + data.result.results[id] + '</option>');
             optgroup.append(option);
             count++;
         }
@@ -133,6 +141,7 @@ M.local_bulkmeta.selector = {
      * @param {string} option The name of the preference to set
      */
     set_user_preference : function(e, name, option) {
-       M.util.set_user_preference(name +'_option_'+ option, Y.one('#id_'+ name +'_option_'+ option).get('checked'));
+       M.util.set_user_preference(name + '_option_' + option,
+                                  Y.one('#id_' + name + '_option_' + option).get('checked'));
     }
 };

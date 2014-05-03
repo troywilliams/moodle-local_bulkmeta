@@ -14,84 +14,89 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-
 defined('MOODLE_INTERNAL') || die();
+
+/**
+ * Form library code.
+ *
+ * @package    local_bulkmeta
+ * @copyright  2014 Troy Williams
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 require_once($CFG->libdir . '/formslib.php');
 
 class bulkmeta_manage_form extends moodleform {
-    
-    const controlname = 'bulkmeta';
 
     protected $course;
 
     public function definition() {
         global $PAGE;
 
-        $searchtext = optional_param(self::controlname .'_searchtext', '', PARAM_TEXT);
+        $searchtext = optional_param('bulkmeta_searchtext', '', PARAM_TEXT);
 
         $mform  = $this->_form;
         $course = $this->_customdata['course'];
         $this->course = $course;
-        
+
         $mform->disable_form_change_checker();
-        
+
         $mform->addElement('html', html_writer::tag('h1', get_string('pluginname', 'local_bulkmeta')));
-      
+
         $currentlylinked = local_bulkmeta_manager::linked_courses($course->id);
         $linkedcoursesdata = array($currentlylinked->label => $currentlylinked->results);
 
-        $mform->addElement('selectgroups', self::controlname . '_unlink', get_string('linkedcourses', 'local_bulkmeta'), $linkedcoursesdata,
+        $mform->addElement('selectgroups', 'bulkmeta_unlink', get_string('linkedcourses', 'local_bulkmeta'), $linkedcoursesdata,
                            array('size' => 10, 'multiple' => true));
-        $mform->addElement('submit', self::controlname.'_removebutton', get_string('unlinkselected', 'local_bulkmeta'));
-        
+        $mform->addElement('submit', 'bulkmeta_removebutton', get_string('unlinkselected', 'local_bulkmeta'));
+
         $mform->addElement('html', html_writer::empty_tag('br'));
 
         $found = local_bulkmeta_manager::search($course->id, $searchtext);
         $foundcoursesdata = array($found->label => $found->results);
- 
-        $mform->addElement('selectgroups', self::controlname  . '_link', '', $foundcoursesdata, array('size' => 10, 'multiple' => true));
-        
-        $searchgroup = array();
-        $searchgroup[] = $mform->createElement('text', self::controlname.'_searchtext');
-        $mform->setType(self::controlname.'_searchtext', PARAM_TEXT);
-        $searchgroup[] = $mform->createElement('submit', self::controlname.'_searchbutton', get_string('search'));
-        $mform->registerNoSubmitButton(self::controlname.'_searchbutton');
-        $searchgroup[] = $mform->createElement('submit', self::controlname.'_clearbutton', get_string('clear'));
-        $mform->registerNoSubmitButton(self::controlname.'_clearbutton');
-        $searchgroup[] = $mform->createElement('submit', self::controlname.'_addbutton', get_string('linkselected', 'local_bulkmeta'));
-        $mform->addGroup($searchgroup, 'searchgroup', get_string('search') , array(''), false);
-        
-        $mform->addElement('checkbox', self::controlname.'_option_searchanywhere', get_string('searchanywhere', 'local_bulkmeta'));
-        user_preference_allow_ajax_update(self::controlname.'_option_searchanywhere', 'bool');
-        $searchanywhere = get_user_preferences(self::controlname.'_option_searchanywhere', false);
-        $this->set_data(array(self::controlname.'_option_searchanywhere' => $searchanywhere));
 
-        $mform->addElement('checkbox', self::controlname.'_option_idnumber',
+        $mform->addElement('selectgroups', 'bulkmeta_link', '', $foundcoursesdata, array('size' => 10, 'multiple' => true));
+
+        $searchgroup = array();
+        $searchgroup[] = $mform->createElement('text', 'bulkmeta_searchtext');
+        $mform->setType('bulkmeta_searchtext', PARAM_TEXT);
+        $searchgroup[] = $mform->createElement('submit', 'bulkmeta_searchbutton', get_string('search'));
+        $mform->registerNoSubmitButton('bulkmeta_searchbutton');
+        $searchgroup[] = $mform->createElement('submit', 'bulkmeta_clearbutton', get_string('clear'));
+        $mform->registerNoSubmitButton('bulkmeta_clearbutton');
+        $searchgroup[] = $mform->createElement('submit', 'bulkmeta_addbutton', get_string('linkselected', 'local_bulkmeta'));
+        $mform->addGroup($searchgroup, 'searchgroup', get_string('search') , array(''), false);
+
+        $mform->addElement('checkbox', 'bulkmeta_option_searchanywhere', get_string('searchanywhere', 'local_bulkmeta'));
+        user_preference_allow_ajax_update('bulkmeta_option_searchanywhere', 'bool');
+        $searchanywhere = get_user_preferences('bulkmeta_option_searchanywhere', false);
+        $this->set_data(array('bulkmeta_option_searchanywhere' => $searchanywhere));
+
+        $mform->addElement('checkbox', 'bulkmeta_option_idnumber',
                            get_string('includeinsearch', 'local_bulkmeta', get_string('idnumbercourse')));
 
-        user_preference_allow_ajax_update(self::controlname.'_option_idnumber', 'bool');
-        $includeidnumber= get_user_preferences(self::controlname.'_option_idnumber', false);
-        $this->set_data(array(self::controlname.'_option_idnumber' => $includeidnumber));
-        
-        $mform->addElement('checkbox', self::controlname.'_option_summary',
+        user_preference_allow_ajax_update('bulkmeta_option_idnumber', 'bool');
+        $includeidnumber = get_user_preferences('bulkmeta_option_idnumber', false);
+        $this->set_data(array('bulkmeta_option_idnumber' => $includeidnumber));
+
+        $mform->addElement('checkbox', 'bulkmeta_option_summary',
                            get_string('includeinsearch', 'local_bulkmeta', get_string('coursesummary')));
 
-        user_preference_allow_ajax_update(self::controlname.'_option_summary', 'bool');
-        $includesummary= get_user_preferences(self::controlname.'_option_summary', false);
-        $this->set_data(array(self::controlname.'_option_summary' => $includesummary));
-        
+        user_preference_allow_ajax_update('bulkmeta_option_summary', 'bool');
+        $includesummary = get_user_preferences('bulkmeta_option_summary', false);
+        $this->set_data(array('bulkmeta_option_summary' => $includesummary));
+
         $mform->addElement('hidden', 'id', null);
         $mform->setType('id', PARAM_INT);
         $this->set_data(array('id' => $course->id));
-        
+
         $cancellink = html_writer::link(new moodle_url('/enrol/instances.php', array('id' => $course->id)), get_string('cancel'));
         $mform->addElement('static', 'cancel', $cancellink);
         $mform->closeHeaderBefore('cancel');
 
         $PAGE->requires->yui_module('moodle-local_bulkmeta-selector',
                                     'M.local_bulkmeta.selector.init',
-                                    array($course->id, self::controlname));
+                                    array($course->id, 'bulkmeta'));
 
     }
 
@@ -100,7 +105,5 @@ class bulkmeta_manage_form extends moodleform {
         $errors = array();
         return $errors;
     }
-    
-}
 
-?>
+}
