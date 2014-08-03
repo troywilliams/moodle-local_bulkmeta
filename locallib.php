@@ -97,7 +97,7 @@ class local_bulkmeta_manager {
         $searchsql = '';
         $searchparams = array();
         if (!empty($query)) {
-            $searchanywhere = get_user_preferences('bulkmeta_searchanywhere', false);
+            $searchanywhere = get_user_preferences('bulkmeta_option_searchanywhere', false);
             if ($searchanywhere) {
                 $query = '%' . $query . '%';
             } else {
