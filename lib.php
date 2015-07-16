@@ -34,7 +34,7 @@ defined('MOODLE_INTERNAL') || die();
  * @param context_course $context
  * @return type
  */
-function local_bulkmeta_extends_settings_navigation($navigation, $context) {
+function local_bulkmeta_extend_settings_navigation($navigation, $context) {
     global $SITE;
 
     if (!isloggedin()) {

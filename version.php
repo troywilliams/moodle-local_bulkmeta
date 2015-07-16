@@ -21,10 +21,10 @@
  */
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2014042801;
-$plugin->requires  = 2013050100;            // See http://docs.moodle.org/dev/Moodle_Versions for more information.
+$plugin->version   = 2015051100;
+$plugin->requires  = 2015051100;            // See http://docs.moodle.org/dev/Moodle_Versions for more information.
 $plugin->cron      = 0;
 $plugin->component = 'local_bulkmeta';      // Full name of the plugin (used for diagnostics).
-$plugin->release   = '2.7';                 // Human-friendly version name.
-$plugin->maturity  = MATURITY_ALPHA;        // This version's maturity level.
-$plugin->dependencies = array('enrol_meta' => '2013110500');
+$plugin->release   = '2.9';                 // Human-friendly version name.
+$plugin->maturity  = MATURITY_RC;           // This version's maturity level.
+$plugin->dependencies = array('enrol_meta' => '2015051100');
